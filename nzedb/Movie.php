@@ -5,14 +5,11 @@ use app\models\Settings;
 use nzedb\db\DB;
 use nzedb\utility\Misc;
 use nzedb\processing\tv\TraktTv;
-<<<<<<< HEAD
 use Tmdb\ApiToken;
 use Tmdb\Client as TmdbClient;
 use Tmdb\Exception\TmdbApiException;
-=======
 use libs\Tmdb\TmdbAPI;
 
->>>>>>> 56456bf3c389d6e2f8926c692f2a8ab9265b29a2
 
 /**
  * Class Movie
@@ -141,7 +138,7 @@ class Movie
 	/**
 	 * @var boolean
 	 */
-	public $echooutput;
+	public $echooutput = 1;
 
 	/**
 	 * @var string
@@ -639,7 +636,9 @@ class Movie
 		foreach ($query as $key => $value) {
 			$query[$key] = rtrim($value, ', ');
 		}
-
+		print $query[0];
+		print $query[1];
+		print $query[2];
 		return $this->pdo->queryInsert($query[0] . ') ' . $query[1] . ') ' . $query[2]);
 	}
 
@@ -1492,29 +1491,6 @@ class Movie
 		return false;
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Get upcoming movies.
-	 *
-	 * @param        $type
-	 * @param string $source
-	 *
-	 * @return array|boolean
-	 */
-	public function getUpcoming($type, $source = 'rottentomato')
-	{
-		$list = $this->pdo->queryOneRow(
-			sprintf('SELECT * FROM upcoming_releases WHERE source = %s AND typeid = %d', $this->pdo->escapeString($source), $type)
-		);
-		if ($list === false) {
-			$this->updateUpcoming();
-			$list = $this->pdo->queryOneRow(
-				sprintf('SELECT * FROM upcoming_releases WHERE source = %s AND typeid = %d', $this->pdo->escapeString($source), $type)
-			);
-		}
-		return $list;
-	}
-=======
     /**
      * Get upcoming movies.
      *
@@ -1532,7 +1508,6 @@ class Movie
             $where = 'release_date > now()';
             $sort = ($sort == 'pop') ? 'popularity DESC' : 'release_date ASC';
         }
->>>>>>> 56456bf3c389d6e2f8926c692f2a8ab9265b29a2
 
         $query = sprintf('SELECT relid, info FROM upcoming_releases WHERE %s ORDER BY %s', $where, $sort);
         $list = $this->pdo->query($query);
@@ -1551,7 +1526,7 @@ class Movie
             foreach ($movies as $bo) {
                 $bo->setAPI($client);
                 $detail = $bo->loadDetails();
-                if ($detail !== true) {
+     		if ($detail !== true) {
                     $this->pdo->log->doEcho($this->pdo->log->header("Unable to load details for release " . $bo->getID() . ". $detail" . PHP_EOL));
                 }
                 $this->updateInsUpcoming('tmdb', $type, $bo);
@@ -1612,6 +1587,12 @@ class Movie
 	 */
 	protected function updateInsUpcoming($source, $type, $info)
 	{
+		print "source: " . $source . PHP_EOL;
+		print "type: " . $type . PHP_EOL;
+		print "info: " . $info . PHP_EOL;
+		print "";
+
+
 		return $this->pdo->queryExec(
 				sprintf("
 				INSERT INTO upcoming_releases (source, typeid, info, updateddate)
