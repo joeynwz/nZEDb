@@ -1526,7 +1526,8 @@ class Movie
             foreach ($movies as $bo) {
                 $bo->setAPI($client);
                 $detail = $bo->loadDetails();
-     		if ($detail !== true) {
+
+                if ($detail !== true) {
                     $this->pdo->log->doEcho($this->pdo->log->header("Unable to load details for release " . $bo->getID() . ". $detail" . PHP_EOL));
                 }
                 $this->updateInsUpcoming('tmdb', $type, $bo);
